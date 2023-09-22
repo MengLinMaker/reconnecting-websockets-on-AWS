@@ -17,6 +17,8 @@ custom:
 
 package:
   individually: true
+  patterns:
+    - '!**/test'
 
 functions:
   websocketTest:
