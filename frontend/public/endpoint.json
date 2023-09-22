@@ -1,0 +1,43 @@
+{
+  "dev": {
+    "urls": {
+      "apiGateway": "",
+      "apiGatewayBaseURL": "",
+      "httpApi": "",
+      "httpApiBaseURL": "",
+      "byPath": {},
+      "byFunction": {},
+      "byMethod": {}
+    },
+    "functions": {
+      "websocketTest": {
+        "name": "WebSocket-dev-websocketTest",
+        "arn": "arn:aws:lambda:ap-southeast-2:585946893245:function:WebSocket-dev-websocketTest:4",
+        "runtime": "python3.9",
+        "triggers": [
+          "websocket"
+        ],
+        "dependancies": {}
+      }
+    },
+    "outputs": [
+      {
+        "OutputKey": "WebsocketTestLambdaFunctionQualifiedArn",
+        "OutputValue": "arn:aws:lambda:ap-southeast-2:585946893245:function:WebSocket-dev-websocketTest:4",
+        "Description": "Current Lambda function version",
+        "ExportName": "sls-WebSocket-dev-WebsocketTestLambdaFunctionQualifiedArn"
+      },
+      {
+        "OutputKey": "ServiceEndpointWebsocket",
+        "OutputValue": "wss://8b94t19j46.execute-api.ap-southeast-2.amazonaws.com/dev",
+        "Description": "URL of the service endpoint",
+        "ExportName": "sls-WebSocket-dev-ServiceEndpointWebsocket"
+      },
+      {
+        "OutputKey": "ServerlessDeploymentBucketName",
+        "OutputValue": "websocket-dev-serverlessdeploymentbucket-2pfzb8lypem4",
+        "ExportName": "sls-WebSocket-dev-ServerlessDeploymentBucketName"
+      }
+    ]
+  }
+}
