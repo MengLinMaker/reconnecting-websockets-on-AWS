@@ -6,6 +6,7 @@ dist-ssr
 *.local
 .DS_Store
 .serverless
+**/__pycache__
 # Ignore serverless manifest files
 serverless.manifest.json
 .serverless/manifest.json
