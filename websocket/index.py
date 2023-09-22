@@ -46,13 +46,13 @@ def defaultHandler(apigw_management, connectionId):
     })
   apigw_management.post_to_connection(ConnectionId=connectionId, Data=data)
 
-def handler(event):
+def handler(event, context):
   connectionId = event.get('requestContext',{}).get('connectionId')
   if connectionId is None:
-    return { 
+    return json.dumps({ 
       'statusCode': 400, 
       'body': 'Could not get connection id'
-    }
+    })
   connectionIds.append(connectionId)
   
   eventType = event["requestContext"]["eventType"]
@@ -68,9 +68,9 @@ def handler(event):
     elif eventType == 'default':
       defaultHandler(apigw_management, connectionId)
   except:
-    return { 
+    return json.dumps({ 
       'statusCode': 400, 
       'body': 'Server handler could not execute'
-    }
+    })
 
   return
