@@ -7,33 +7,42 @@ connectionIds = []
 def connectHandler(apigw_management, connectionId):
   for yourConnectionId in connectionIds:
     data = json.dumps({
-      'Your ID': yourConnectionId,
-      'Just connected': connectionId,
-      'Number of connections': len(connectionIds),
-      'Time': f'{time.time()} seconds',
-      'List IDs': connectionIds,
+      'statusCode': 200, 
+      'body': {
+        'Your ID': yourConnectionId,
+        'Just connected': connectionId,
+        'Number of connections': len(connectionIds),
+        'Time': f'{time.time()} seconds',
+        'List IDs': connectionIds
+      }
     })
     apigw_management.post_to_connection(ConnectionId=connectionId, Data=data)
   
 def disconnectHandler(apigw_management, connectionId):
   for yourConnectionId in connectionIds:
     data = json.dumps({
-      'Your ID': yourConnectionId,
-      'Just disconnected': connectionId,
-      'Number of connections': len(connectionIds),
-      'Time': f'{time.time()} seconds',
-      'List IDs': connectionIds,
+      'statusCode': 200, 
+      'body': {
+        'Your ID': yourConnectionId,
+        'Just disconnected': connectionId,
+        'Number of connections': len(connectionIds),
+        'Time': f'{time.time()} seconds',
+        'List IDs': connectionIds
+      }
     })
   apigw_management.post_to_connection(ConnectionId=connectionId, Data=data)
 
 def defaultHandler(apigw_management, connectionId):
   for yourConnectionId in connectionIds:
     data = json.dumps({
-      'Your ID': yourConnectionId,
-      'Default ID': connectionId,
-      'Number of connections': len(connectionIds),
-      'Time': f'{time.time()} seconds',
-      'List IDs': connectionIds,
+      'statusCode': 200, 
+      'body': {
+        'Your ID': yourConnectionId,
+        'Default ID': connectionId,
+        'Number of connections': len(connectionIds),
+        'Time': f'{time.time()} seconds',
+        'List IDs': connectionIds
+      }
     })
   apigw_management.post_to_connection(ConnectionId=connectionId, Data=data)
 
@@ -42,7 +51,7 @@ def handler(event):
   if connectionId is None:
     return { 
       'statusCode': 400, 
-      'body': 'bad request'
+      'body': 'Could not get connection id'
     }
   connectionIds.append(connectionId)
   
@@ -51,11 +60,17 @@ def handler(event):
   stage = event.get('requestContext',{}).get('stage')
   apigw_management = boto3.client('apigatewaymanagementapi', endpoint_url=F"https://{domain_name}/{stage}")
  
-  if eventType == 'connect':
-    connectHandler(apigw_management, connectionId)
-  elif eventType == 'disconnect':
-    disconnectHandler(apigw_management, connectionId)
-  elif eventType == 'default':
-    defaultHandler(apigw_management, connectionId)
-  
+  try:
+    if eventType == 'connect':
+      connectHandler(apigw_management, connectionId)
+    elif eventType == 'disconnect':
+      disconnectHandler(apigw_management, connectionId)
+    elif eventType == 'default':
+      defaultHandler(apigw_management, connectionId)
+  except:
+    return { 
+      'statusCode': 400, 
+      'body': 'Server handler could not execute'
+    }
+
   return
