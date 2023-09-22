@@ -6,3 +6,6 @@ dist-ssr
 *.local
 .DS_Store
 .serverless
+# Ignore serverless manifest files
+serverless.manifest.json
+.serverless/manifest.json
