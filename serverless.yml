@@ -13,7 +13,7 @@ plugins:
 
 custom:
   manifest:
-    output: ./frontend/public/endpoint.json
+    output: ./frontend/src/endpoint.json
 
 package:
   individually: true

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import endpoint from '../../public/endpoint.json'
+  import endpoint from '/src/endpoint.json'
   const websocketUrl = endpoint.dev.outputs[1].OutputValue
 
   const ws = new WebSocket(websocketUrl)
