@@ -1,3 +1,7 @@
 node_modules
 endpoint.json
 .env
+dist
+dist-ssr
+*.local
+.DS_Store
