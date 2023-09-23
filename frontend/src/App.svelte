@@ -1,13 +1,10 @@
 <script lang="ts">
-  import Counter from './lib/Counter.svelte'
+  import Socklet from './lib/socklet.svelte'
 </script>
 
-<main>
-  <div class="card">
-    <Counter />
-  </div>
-</main>
-
-<style>
-
-</style>
+<h2>WebSocket Test</h2>
+<div class="flex">
+<Socklet defaultName='Bob'/>
+<Socklet defaultName='Zoe'/>
+<Socklet defaultName='Lee'/>
+</div>
