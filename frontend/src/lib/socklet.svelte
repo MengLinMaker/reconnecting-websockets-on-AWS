@@ -24,6 +24,9 @@
     }
 
     ws.onclose = function () {
+      message = {
+        'Name': message['Name']
+      }
     }
 
     ws.onmessage = function (evt) {
