@@ -15,12 +15,18 @@
   }
 
   const pingWebsocket = () => {
-    ws.send("Hello")
+    ws.send(JSON.stringify({
+      'action': 'ping'
+    }))
   }
 
   const openWebsocket = () => {
     ws = new WebSocket(websocketUrl)
     ws.onopen = function () {
+      ws.send(JSON.stringify({
+        'Name': message['Name'],
+        'action': 'setName'
+      }))
     }
 
     ws.onclose = function () {
