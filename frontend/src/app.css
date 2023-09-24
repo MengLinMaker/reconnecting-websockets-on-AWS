@@ -41,8 +41,8 @@ body {
 }
 
 .spacer {
-  height: 4px;
-  width: 4px;
+  min-height: 4px;
+  min-width: 4px;
 }
 
 input, button {
