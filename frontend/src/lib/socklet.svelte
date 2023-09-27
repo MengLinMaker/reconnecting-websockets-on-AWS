@@ -5,7 +5,7 @@
   // States
   const websocketUrl = endpoint.dev.outputs[1].OutputValue
   let ws = null
-  let message = {
+  let message:Object = {
     'Name': defaultName
   }
 
@@ -23,16 +23,21 @@
   const openWebsocket = () => {
     ws = new WebSocket(websocketUrl)
     ws.onopen = function () {
-      ws.send(JSON.stringify({
-        'Name': message['Name'],
-        'action': 'setName'
-      }))
+      if (message['ID']) {
+        ws.send(JSON.stringify({
+          'action': 'setName',
+          'Name': message['Name'],
+          'ID': message['ID']
+        }))
+      }
     }
 
     ws.onclose = function () {
       message = {
-        'Name': message['Name']
+        'Name': message['Name'],
+        'ID': message['ID']
       }
+      console.log('closed connection')
     }
 
     ws.onmessage = function (evt) {

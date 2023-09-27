@@ -6,7 +6,7 @@ except:
   pass
 
 startTime = time.time()
-connectionIds = set()
+IDs = {}
 
 def response(responseCode, body):
   # Websocket lambda must return status code and stringified body
@@ -14,48 +14,63 @@ def response(responseCode, body):
     'statusCode': responseCode,
     'body': json.dumps(body)
   }
-
-def connectHandler(apigw_management, connectionId):
-  pass
   
-def disconnectHandler(apigw_management, connectionId):
-  connectionIds.remove(connectionId)
-  for loopConnectionId in list(connectionIds):
-    data = json.dumps({
-      'Your ID': loopConnectionId,
-      'Just disconnected': connectionId,
-      'Number of connections': len(connectionIds),
-      'Time': f'{time.time() - startTime} seconds',
-      'List IDs': list(connectionIds)
-    })
-    apigw_management.post_to_connection(ConnectionId=loopConnectionId, Data=data)
+def disconnectHandler(apigw_management, connectionId, event):
+  disconnectName = IDs[connectionId]
+  IDs.pop(connectionId, None)
+  data = json.dumps({
+    'Left socket': disconnectName,
+    'ID': connectionId,
+    'Connections': len(IDs),
+    'Time': '{:.1f} sec'.format(time.time() - startTime),
+  })
+  apigw_management.post_to_connection(ConnectionId=connectionId, Data=data)
+  return data
 
-def defaultHandler(apigw_management, connectionId):
-  for loopConnectionId in list(connectionIds):
+def setNameHandler(apigw_management, connectionId, event):
+  IDs[connectionId] = json.loads(event['body'])['Name']
+  data = json.dumps({
+    'Joined socket': IDs[connectionId],
+    'ID': connectionId,
+    'Connections': len(IDs),
+    'Time': '{:.1f} sec'.format(time.time() - startTime),
+  })
+  apigw_management.post_to_connection(ConnectionId=connectionId, Data=data)
+  return {'Name': IDs[connectionId] }
+
+def pingHandler(apigw_management, connectionId, event):
+  currentTime = time.time()
+  while (time.time() - currentTime < 10):
+    name = IDs[connectionId]
     data = json.dumps({
-      "Time": time.time() - startTime
+      'Ping from': name,
+      'ID': connectionId,
+      'Connections': len(IDs),
+      'Time': '{:.1f} sec'.format(time.time() - startTime),
     })
-    apigw_management.post_to_connection(ConnectionId=loopConnectionId, Data=data)
+    apigw_management.post_to_connection(ConnectionId=connectionId, Data=data)
+    time.sleep(1)
+  return data
 
 def handler(event, context):
-  connectionId = event.get('requestContext', {}).get('connectionId')
-  if connectionId is None:
-    return response(400, 'Request requestContext.connectionId does not exist')
-  print('Adding connection')
-  connectionIds.add(connectionId)
-
   try:
-    eventType = event["requestContext"]["eventType"]
-    domainName = event.get('requestContext',{}).get('domainName')
-    stage = event.get('requestContext', {}).get('stage')
-    apigw_management = boto3.client('apigatewaymanagementapi', endpoint_url=f"https://{domainName}/{stage}")
-    if eventType == 'CONNECT':
-      connectHandler(apigw_management, connectionId)
-    elif eventType == 'DISCONNECT':
-      disconnectHandler(apigw_management, connectionId)
-    elif eventType == 'DEFAULT':
-      defaultHandler(apigw_management, connectionId)
-    
-    return response(200, 'Connected')
+    connectionId = event['requestContext']['connectionId']
   except:
-    return response(400, 'Handler failed to execute')
+    return response(400, 'Request requestContext.connectionId does not exist')
+
+  routeKey = event["requestContext"]["routeKey"]
+  domainName = event['requestContext']['domainName']
+  stage = event['requestContext']['stage']
+  apigw_management = boto3.client('apigatewaymanagementapi', endpoint_url=f"https://{domainName}/{stage}")
+  
+  if routeKey == '$connect':
+    data = 'Connected'
+  elif routeKey == '$disconnect':
+    data = disconnectHandler(apigw_management, connectionId, event)
+  elif routeKey == 'setName':
+    data = setNameHandler(apigw_management, connectionId, event)
+  elif routeKey == 'ping':
+    data = pingHandler(apigw_management, connectionId, event)
+
+  return response(200, data)
+        
