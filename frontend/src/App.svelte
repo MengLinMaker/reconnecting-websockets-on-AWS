@@ -4,7 +4,5 @@
 
 <h2>WebSocket Test</h2>
 <div class="flex">
-<Socklet defaultName='Bob'/>
-<Socklet defaultName='Zoe'/>
-<Socklet defaultName='Lee'/>
+  <Socklet/>
 </div>
