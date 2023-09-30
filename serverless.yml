@@ -6,7 +6,18 @@ provider:
   runtime: python3.9
   region: ap-southeast-2
   architecture: arm64
-
+  iamRoleStatements:
+  - Effect: Allow
+    Action:
+      - dynamodb:DescribeTable
+      - dynamodb:Query
+      - dynamodb:Scan
+      - dynamodb:GetItem
+      - dynamodb:PutItem
+      - dynamodb:UpdateItem
+      - dynamodb:DeleteItem
+    Resource:
+      - Fn::GetAtt: [ WebsocketTable, Arn ]
 plugins:
   - serverless-python-requirements
   - serverless-manifest-plugin
@@ -29,10 +40,27 @@ functions:
     memorySize: 128
     events:
       - websocket:
-          route: $connect
+          route: open
       - websocket:
-          route: $disconnect
-      - websocket:
-          route: setName
-      - websocket:
-          route: ping
+          route: close
+
+resources:
+  Resources:
+    WebsocketTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: WebSocket-Test-Table
+        KeySchema:
+          - AttributeName: websocketURL
+            KeyType: HASH
+          - AttributeName: parentID
+            KeyType: RANGE
+        AttributeDefinitions:
+          - AttributeName: websocketURL
+            AttributeType: S
+          - AttributeName: parentID
+            AttributeType: S
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+ 

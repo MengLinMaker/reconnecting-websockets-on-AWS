@@ -1,13 +1,11 @@
 <script lang="ts">
-  export let defaultName
   import endpoint from '/src/endpoint.json'
 
   // States
   const websocketUrl = endpoint.dev.outputs[1].OutputValue
   let ws = null
-  let message:Object = {
-    'Name': defaultName
-  }
+  let parentID = ''
+  let message:Object = {}
 
   const closeWebsocket = () => {
     ws.close()
@@ -16,35 +14,30 @@
 
   const pingWebsocket = () => {
     ws.send(JSON.stringify({
-      'action': 'ping'
+      'action': 'open',
+      'parentID': parentID
     }))
   }
 
   const openWebsocket = () => {
     ws = new WebSocket(websocketUrl)
     ws.onopen = function () {
-      if (message['ID']) {
-        ws.send(JSON.stringify({
-          'action': 'setName',
-          'Name': message['Name'],
-          'ID': message['ID']
-        }))
-      }
+      ws.send(JSON.stringify({
+        'action': 'open',
+        'parentID': parentID
+      }))
     }
 
     ws.onclose = function () {
-      message = {
-        'Name': message['Name'],
-        'ID': message['ID']
-      }
-      console.log('closed connection')
+      message = {}
     }
 
     ws.onmessage = function (evt) {
       message = {
-        'Name': message['Name'],
         ...JSON.parse(evt.data)
       }
+      const id = message['parentID']
+      if (id) parentID = id
     }
   }
 </script>
