@@ -5,11 +5,15 @@
   const websocketUrl = endpoint.dev.outputs[1].OutputValue
   let ws = null
   let parentID = ''
-  let message:Object = {}
+  let message:Object = {
+    'message': 'Await connection'
+  }
 
   const closeWebsocket = () => {
+    ws.send(JSON.stringify({
+      'action': 'close',
+    }))
     ws.close()
-    ws = null
   }
 
   const pingWebsocket = () => {
@@ -29,7 +33,7 @@
     }
 
     ws.onclose = function () {
-      message = {}
+      message = {'message': 'Await connection'}
     }
 
     ws.onmessage = function (evt) {
@@ -40,6 +44,10 @@
       if (id) parentID = id
     }
   }
+
+  window.addEventListener('online', () => {
+    if (parentID != '') openWebsocket()
+  })
 </script>
 
 <div class="container card">
