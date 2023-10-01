@@ -15,10 +15,6 @@ def dynamodb_update(dynamodbTable, key, attribute):
     attribute_names[f"#{key}"] = key
   update_expression = "SET " + ", ".join(update_expression)
 
-  print(update_expression)
-  print(attribute_names)
-  print(attribute_values)
-
   dynamodbTable.update_item(
     Key=key,
     UpdateExpression=update_expression,
@@ -42,30 +38,22 @@ def handler(event, context):
   if routeKey == 'open':
     parentID = json.loads(event['body'])['parentID']
     if parentID == '':
-      dynamodbKey = {
-        'websocketURL': endpoint_url,
-        'parentID': currentID
-      }
-      postToClient({'parentID': currentID})
       dynamodbTable.put_item(Item={
         'websocketURL': endpoint_url,
         'parentID': currentID,
         'currentID': currentID
       })
-      print('Dynamo Create')
+      postToClient({'parentID': currentID})
     else:
-      result = dynamodbTable.get_item(Key=dynamodbKey)
-      print(result['Item'])
-      postToClient({
-        'currentID': currentID
-      })
-      dynamodb_update(dynamodbTable, {
+      dynamodbKey = {
         'websocketURL': endpoint_url,
         'parentID': parentID
-      }, {
+      }
+      dynamodb_update(dynamodbTable, dynamodbKey, {
         'currentID': currentID
       })
-      print('Dynamo Update')
+      item = dynamodbTable.get_item(Key=dynamodbKey)['Item']
+      postToClient(item)
   elif routeKey == 'close':
     parentID = json.loads(event['body'])['parentID']
     dynamodbKey = {
@@ -77,7 +65,6 @@ def handler(event, context):
     postToClient({
       'parentID': ''
     })
-    print('Dynamo Close')
 
   return {'statusCode': 200}
 
