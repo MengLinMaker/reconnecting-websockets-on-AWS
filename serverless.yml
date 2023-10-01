@@ -6,6 +6,7 @@ provider:
   runtime: python3.9
   region: ap-southeast-2
   architecture: arm64
+  websocketApiRouteSelectionExpression: $request.body.action
   iamRoleStatements:
   - Effect: Allow
     Action:
@@ -40,9 +41,22 @@ functions:
     memorySize: 128
     events:
       - websocket:
-          route: open
+          routeKey: open
       - websocket:
-          route: close
+          routeKey: close
+  message:
+    module: message
+    handler: index.handler
+    description: Send message to client
+    timeout: 1
+    memorySize: 128
+    events:
+      - stream:
+          type: dynamodb
+          arn:
+            Fn::GetAtt: [ WebsocketTable, StreamArn ]
+      - websocket:
+          routeKey: message
 
 resources:
   Resources:
@@ -63,4 +77,6 @@ resources:
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
+        StreamSpecification:
+          StreamViewType: NEW_IMAGE
  
