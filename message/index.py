@@ -1,3 +1,4 @@
+import json
 import boto3
 
 dynamodbTable = boto3.resource('dynamodb').Table('WebSocket-Test-Table')
@@ -11,5 +12,5 @@ def handler(event, context):
     message = dynamodbNewImage['message']['S']
 
     apigateway = boto3.client('apigatewaymanagementapi', endpoint_url=endpoint_url)
-    apigateway.post_to_connection(ConnectionId=currentID, Data=message)
+    apigateway.post_to_connection(ConnectionId=currentID, Data=json.dumps({'message': message}))
   except: pass
