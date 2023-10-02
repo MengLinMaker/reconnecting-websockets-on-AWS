@@ -28,14 +28,20 @@ package:
     - '!frontend'
 
 functions:
-  connection:
-    handler: connection/index.handler
-    description: Handle websocket connections
+  open:
+    handler: open/index.handler
+    description: Connect to new or existing websocket in dynamodb
     timeout: 1
     memorySize: 128
     events:
       - websocket:
           route: open
+  close:
+    handler: close/index.handler
+    description: Remove persistent websocket from dynamodb
+    timeout: 1
+    memorySize: 128
+    events:
       - websocket:
           route: close
   message:
