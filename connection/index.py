@@ -8,9 +8,9 @@ def dynamodb_update(dynamodbTable, dynamodbKey, attribute):
   attribute_values = dict()
 
   for key, val in attribute.items():
-    update_expression.append(f" {key} = :{key}")
-    attribute_values[f":{key}"] = val
-  update_expression = "SET " + ", ".join(update_expression)
+    update_expression.append(f' {key} = :{key}')
+    attribute_values[f':{key}'] = val
+  update_expression = 'SET ' + ', '.join(update_expression)
 
   dynamodbTable.update_item(
     Key=dynamodbKey,
@@ -24,13 +24,13 @@ def handler(event, context):
 
   domainName = event['requestContext']['domainName']
   stage = event['requestContext']['stage']
-  endpoint_url = f"https://{domainName}/{stage}"
+  endpoint_url = f'https://{domainName}/{stage}'
   apigateway = boto3.client('apigatewaymanagementapi', endpoint_url=endpoint_url)
   
   def postToClient(data):
     apigateway.post_to_connection(ConnectionId=currentID, Data=json.dumps(data))
 
-  routeKey = event["requestContext"]["routeKey"]
+  routeKey = event['requestContext']['routeKey']
   if routeKey == 'open':
     parentID = json.loads(event['body'])['parentID']
     if parentID == '':
@@ -54,6 +54,5 @@ def handler(event, context):
     }
     # Reset values to default for full disconnect
     dynamodbTable.delete_item(Key=dynamodbKey)
-    postToClient({'parentID': ''})
 
   return {'statusCode': 200}
