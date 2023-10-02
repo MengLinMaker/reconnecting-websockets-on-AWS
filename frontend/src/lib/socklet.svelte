@@ -1,16 +1,21 @@
 <script lang="ts">
   import endpoint from '/src/endpoint.json'
 
-  // States
   const websocketFilter = endpoint.dev.outputs.filter((output) => {
     return output.OutputValue.match('wss://')
   })
-  const baseUrl = endpoint.dev.urls.apiGateway
   const websocketUrl = websocketFilter[0].OutputValue
+
   let ws = null
   let parentID = ''
-  let message:Object = {
-    'message': 'Await connection'
+  let message = {}
+
+  const setParentID = (currentID) => {
+    if (currentID) parentID = currentID
+  }
+
+  const setMessage = (newMessage) => {
+    if (newMessage) message = newMessage
   }
 
   const closeWebsocket = () => {
@@ -18,22 +23,10 @@
       'action': 'close',
       'parentID': parentID
     }))
-    message = {
-      'message': 'Await connection'
-    }
     ws.close()
     ws = null
-    parentID = ''
-  }
-
-  const pingWebsocket = async() => {
-    await fetch(`${baseUrl}/ping`, {
-      method: "POST",
-      body: JSON.stringify({
-        'endpoint': websocketUrl.replace('wss://','https://'),
-        'parentID': parentID
-      })
-    })
+    setMessage({})
+    setParentID('')
   }
 
   const openWebsocket = () => {
@@ -45,25 +38,28 @@
       }))
     }
 
-    ws.onclose = function () {
-      message = {
-        ...message,
-        'message': 'Await connection'
-      }
-    }
-
-    ws.onmessage = function (evt) {
-      message = {
-        ...JSON.parse(evt.data)
-      }
-      const id = message['parentID']
-      if (id) parentID = id
+    ws.onmessage = (event) => {
+      const data = JSON.parse(event.data)
+      setParentID(data['parentID'])
+      setMessage(JSON.parse(data['message']))
     }
   }
 
   window.addEventListener('online', () => {
     if (parentID != '') openWebsocket()
   })
+
+  // Interval ping test from websocket server
+  const baseUrl = endpoint.dev.urls.apiGateway
+  const pingWebsocket = async() => {
+    await fetch(`${baseUrl}/ping`, {
+      method: "POST",
+      body: JSON.stringify({
+        'endpoint': websocketUrl.replace('wss://','https://'),
+        'parentID': parentID
+      })
+    })
+  }
 </script>
 
 <div class="container card">
