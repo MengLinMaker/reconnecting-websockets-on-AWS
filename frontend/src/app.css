@@ -83,7 +83,7 @@ tr {
 .card {
   border: 1px solid #646cff;
   border-radius: 8px;
-  width: 20rem;
+  width: 15rem;
 }
 
 @media (prefers-color-scheme: light) {
