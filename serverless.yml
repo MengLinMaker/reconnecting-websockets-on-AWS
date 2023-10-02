@@ -46,7 +46,7 @@ functions:
           route: close
   message:
     handler: message/index.handler
-    description: Send message to client
+    description: Websocket message client from dynamodb stream
     timeout: 1
     memorySize: 128
     events:
