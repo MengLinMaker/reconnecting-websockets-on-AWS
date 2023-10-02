@@ -9,9 +9,9 @@ def dynamodb_update(dynamodbTable, dynamodbKey, attribute):
   attribute_values = dict()
 
   for key, val in attribute.items():
-    update_expression.append(f" {key} = :{key}")
-    attribute_values[f":{key}"] = val
-  update_expression = "SET " + ", ".join(update_expression)
+    update_expression.append(f' {key} = :{key}')
+    attribute_values[f':{key}'] = val
+  update_expression = 'SET ' + ', '.join(update_expression)
 
   dynamodbTable.update_item(
     Key=dynamodbKey,
@@ -20,13 +20,14 @@ def dynamodb_update(dynamodbTable, dynamodbKey, attribute):
   )
 
 def handler(event, context):
-  endpoint_url = event['body']['endpoint']
-  parentID = event['body']['parentID']
+  body = json.loads(event['body'])
+  endpoint_url = body['endpoint']
+  parentID = body['parentID']
   currentTime = time.time()
   while (time.time() - currentTime < 20):
-    message = json.dumps{
+    message = json.dumps({
       'Time': '{:.1f} sec'.format(time.time() - currentTime)
-    }
+    })
     dynamodbKey = {
         'websocketURL': endpoint_url,
         'parentID': parentID
@@ -35,3 +36,15 @@ def handler(event, context):
       'message': message
     })
     time.sleep(1)
+
+  response = {
+    'statusCode': 200,
+    'headers': {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Credentials': 'true',
+    },
+    'body': json.dumps({
+      'message': 'Success'
+    })
+  }
+  return response
