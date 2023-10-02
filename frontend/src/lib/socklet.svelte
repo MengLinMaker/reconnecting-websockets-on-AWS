@@ -14,12 +14,16 @@
   }
 
   const closeWebsocket = () => {
-    ws.send(JSON.stringify({'action': 'close'}))
-    ws.close()
+    ws.send(JSON.stringify({
+      'action': 'close',
+      'parentID': parentID
+    }))
     message = {
       'message': 'Await connection'
     }
+    ws.close()
     ws = null
+    parentID = ''
   }
 
   const pingWebsocket = async() => {
