@@ -34,7 +34,10 @@
     }
 
     ws.onclose = function () {
-      message = {'message': 'Await connection'}
+      message = {
+        ...message,
+        'message': 'Await connection'
+      }
     }
 
     ws.onmessage = function (evt) {
