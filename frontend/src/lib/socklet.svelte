@@ -5,6 +5,7 @@
   const websocketFilter = endpoint.dev.outputs.filter((output) => {
     return output.OutputValue.match('wss://')
   })
+  const baseUrl = endpoint.dev.urls.apiGateway
   const websocketUrl = websocketFilter[0].OutputValue
   let ws = null
   let parentID = ''
@@ -15,13 +16,20 @@
   const closeWebsocket = () => {
     ws.send(JSON.stringify({'action': 'close'}))
     ws.close()
+    message = {
+      'message': 'Await connection'
+    }
+    ws = null
   }
 
-  const pingWebsocket = () => {
-    ws.send(JSON.stringify({
-      'action': 'open',
-      'parentID': parentID
-    }))
+  const pingWebsocket = async() => {
+    await fetch(`${baseUrl}/ping`, {
+      method: "POST",
+      body: JSON.stringify({
+        'endpoint': websocketUrl.replace('wss://','https://'),
+        'parentID': parentID
+      })
+    })
   }
 
   const openWebsocket = () => {
