@@ -65,30 +65,23 @@
 <div class="container card">
   <div class="flex">
     {#if ws == null}
-      <input bind:value={message['Name']} />
-      <div class="spacer"></div>
-      <button on:click={openWebsocket}>
-        Open
-      </button>
+      <button on:click={openWebsocket}>Open</button>
     {:else}
-      <button on:click={closeWebsocket}>
-        Close
-      </button>
+      <button on:click={closeWebsocket}>Close</button>
       <div class="spacer"></div>
-      <button on:click={pingWebsocket}>
-        Ping
-      </button>
+      <button on:click={pingWebsocket}>Ping</button>
     {/if}
   </div>
 
-  <div class="spacer"></div>
-
-  <table>
-    {#each Object.entries(message) as [key, value]}
-      <tr>
-        <th>{key}</th>
-        <td>{value}</td>
-      </tr>
-    {/each}
-  </table>
+  {#if Object.keys(message).length > 0}
+    <div class="spacer"></div>
+    <table>
+      {#each Object.entries(message) as [key, value]}
+        <tr>
+          <th>{key}</th>
+          <td>{value}</td>
+        </tr>
+      {/each}
+    </table>
+  {/if}
 </div>
