@@ -2,7 +2,10 @@
   import endpoint from '/src/endpoint.json'
 
   // States
-  const websocketUrl = endpoint.dev.outputs[1].OutputValue
+  const websocketFilter = endpoint.dev.outputs.filter((output) => {
+    return output.OutputValue.match('wss://')
+  })
+  const websocketUrl = websocketFilter[0].OutputValue
   let ws = null
   let parentID = ''
   let message:Object = {
@@ -10,9 +13,7 @@
   }
 
   const closeWebsocket = () => {
-    ws.send(JSON.stringify({
-      'action': 'close',
-    }))
+    ws.send(JSON.stringify({'action': 'close'}))
     ws.close()
   }
 
