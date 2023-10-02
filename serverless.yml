@@ -50,6 +50,16 @@ functions:
             Fn::GetAtt: [ WebsocketTable, StreamArn ]
       - websocket:
           route: message
+  ping:
+    handler: ping/index.handler
+    description: Pulse send time message to client
+    timeout: 25
+    memorySize: 128
+    events:
+      - http:
+          path: ping
+          method: post
+          cors: true
 
 resources:
   Resources:
