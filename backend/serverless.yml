@@ -21,7 +21,7 @@ plugins:
 
 custom:
   manifest:
-    output: ./frontend/src/endpoint.json
+    output: ../frontend/src/endpoint.json
 
 package:
   patterns:
