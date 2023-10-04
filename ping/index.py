@@ -28,7 +28,7 @@ def dynamodb_update(dynamodbTable, dynamodbKey, attribute):
 def handler(event, context):
   body = json.loads(event['body'])
   dynamodbKey = {
-    'websocketUrl': body['endpoint'],
+    'socketUrl': body['endpoint'],
     'socketId': body['socketId']
   }
 

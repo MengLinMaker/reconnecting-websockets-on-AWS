@@ -74,12 +74,12 @@ resources:
       Properties:
         TableName: WebSocket-Test-Table
         KeySchema:
-          - AttributeName: websocketUrl
+          - AttributeName: socketUrl
             KeyType: HASH
           - AttributeName: socketId
             KeyType: RANGE
         AttributeDefinitions:
-          - AttributeName: websocketUrl
+          - AttributeName: socketUrl
             AttributeType: S
           - AttributeName: socketId
             AttributeType: S

@@ -11,7 +11,7 @@ def handler(event, context):
   endpoint_url = f'https://{domainName}/{stage}'
 
   dynamodbTable.delete_item(Key={
-    'websocketUrl': endpoint_url,
+    'socketUrl': endpoint_url,
     'socketId': socketId
   })
 

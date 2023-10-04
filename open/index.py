@@ -17,7 +17,7 @@ def handler(event, context):
     apigateway.post_to_connection(ConnectionId=currentId, Data=json.dumps({'socketId': currentId}))
   
   dynamodbTable.put_item(Item={
-    'websocketUrl': endpoint_url,
+    'socketUrl': endpoint_url,
     'socketId': socketId,
     'currentId': currentId
   })
