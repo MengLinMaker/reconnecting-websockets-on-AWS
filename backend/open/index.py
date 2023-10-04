@@ -21,7 +21,7 @@ def handler(event, context):
     'socketUrl': endpoint_url,
     'socketId': socketId,
     'currentId': currentId,
-    'TTL': time.time() + 60*5
+    'TTL': int(time.time() + 60*5)
   })
   
   return {'statusCode': 200}
