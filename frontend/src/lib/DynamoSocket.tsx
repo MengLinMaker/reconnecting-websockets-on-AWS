@@ -55,7 +55,7 @@ export  class DynamoSocket {
     this.#socket.onmessage = (messageEvent) => {
       const data = JSON.parse(messageEvent.data)
       this.#setSocketId(data['socketId'])
-      this.#messageToClient(JSON.parse(data['message']))
+      if (data['message']) this.#messageToClient(JSON.parse(data['message']))
     }
     window.addEventListener('online', this.#reconnectWebsocket)
   }
