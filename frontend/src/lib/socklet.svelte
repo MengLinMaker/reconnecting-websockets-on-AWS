@@ -21,7 +21,7 @@
       method: "POST",
       body: JSON.stringify({
         'endpoint': socketUrl.replace('wss://','https://'),
-        'parentID': socketId
+        'socketId': socketId
       })
     })
   }
