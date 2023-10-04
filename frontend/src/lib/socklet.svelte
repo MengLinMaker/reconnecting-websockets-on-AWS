@@ -1,11 +1,6 @@
 <script lang="ts">
-  import endpoint from '/src/endpoint.json'
   import {DynamoSocket} from './DynamoSocket'
-
-  const socketFilter = endpoint.dev.outputs.filter((output) => {
-    return output.OutputValue.match('wss://')
-  })
-  const socketUrl = socketFilter[0].OutputValue
+  import {socketUrl, baseUrl} from './endpoint'
 
   let message = {}
   let socketId = ''
@@ -15,7 +10,6 @@
   })
 
   // Interval ping test from websocket server
-  const baseUrl = endpoint.dev.urls.apiGateway
   const pingWebsocket = async() => {
     await fetch(`${baseUrl}/ping`, {
       method: "POST",
