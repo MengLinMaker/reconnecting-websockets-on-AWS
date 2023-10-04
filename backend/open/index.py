@@ -1,4 +1,5 @@
 import json
+import time
 import boto3
 
 dynamodbTable = boto3.resource('dynamodb').Table('WebSocket-Test-Table')
@@ -19,7 +20,8 @@ def handler(event, context):
   dynamodbTable.put_item(Item={
     'socketUrl': endpoint_url,
     'socketId': socketId,
-    'currentId': currentId
+    'currentId': currentId,
+    'TTL': time.time() + 60*5
   })
   
   return {'statusCode': 200}
