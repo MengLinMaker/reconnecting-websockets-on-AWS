@@ -1,19 +1,29 @@
+type StringInputVoid = (val:string) => void
+
 export  class DynamoSocket {
   #socket : WebSocket|null = null
   #socketUrl = ''
   #socketId = ''
-  #onMessageHandler = (message) => {}
-  #onSocketIdHandler = (socketId) => {}
+  #onMessageHandler: StringInputVoid
+  #onSocketIdHandler: StringInputVoid
 
-  constructor(socketUrl, {
-    onMessage = (message) => {},
-    onSocketId = (socketId) => {},
+  constructor(socketUrl:string, {
+    onMessage = (message:string) => {},
+    onSocketId = (socketId:string) => {},
     socketId = ''
   }) {
     this.#socketUrl = socketUrl
     this.#onMessageHandler = onMessage
     this.#onSocketIdHandler = onSocketId
     this.#socketId = socketId
+
+    // Reconnect if broken is online
+    window.addEventListener('online', this.#reconnectWebsocket.bind(this))
+    this.#reconnectWebsocket()
+  }
+
+  destructor() {
+    window.removeEventListener('online', this.#reconnectWebsocket.bind(this))
   }
 
   #setSocketId(currentId) {
@@ -41,8 +51,6 @@ export  class DynamoSocket {
     this.#messageToClient({})
     this.#setSocketId('')
     this.#socket?.close()
-    this.#socket = null
-    window.removeEventListener('online', this.#reconnectWebsocket)
   }
   
   openWebsocket() {
@@ -55,6 +63,5 @@ export  class DynamoSocket {
       if (data['socketId']) this.#setSocketId(data['socketId'])
       if (data['message']) this.#messageToClient(JSON.parse(data['message']))
     }
-    window.addEventListener('online', this.#reconnectWebsocket)
   }
 }
