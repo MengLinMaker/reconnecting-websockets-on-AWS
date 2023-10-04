@@ -8,10 +8,10 @@
   const socketUrl = socketFilter[0].OutputValue
 
   let message = {}
-  let parentId = ''
-  const socklet = new DynamoSocket(socketUrl, {
+  let socketId = ''
+  const dynamoSocket = new DynamoSocket(socketUrl, {
     onMessage: (newMessage) => {message = newMessage},
-    onSocketId: (socketId) => {parentId = socketId}
+    onSocketId: (newSocketId) => {socketId = newSocketId}
   })
 
   // Interval ping test from websocket server
@@ -21,7 +21,7 @@
       method: "POST",
       body: JSON.stringify({
         'endpoint': socketUrl.replace('wss://','https://'),
-        'parentID': parentId
+        'parentID': socketId
       })
     })
   }
@@ -29,10 +29,10 @@
 
 <div class="container card">
   <div class="flex">
-    {#if parentId == ''}
-      <button on:click={() => socklet.openWebsocket()}>Open</button>
+    {#if socketId == ''}
+      <button on:click={() => dynamoSocket.openWebsocket()}>Open</button>
     {:else}
-      <button on:click={() => socklet.closeWebsocket()}>Close</button>
+      <button on:click={() => dynamoSocket.closeWebsocket()}>Close</button>
       <div class="spacer"></div>
       <button on:click={pingWebsocket}>Ping</button>
     {/if}

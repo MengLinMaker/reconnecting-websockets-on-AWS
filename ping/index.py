@@ -28,8 +28,8 @@ def dynamodb_update(dynamodbTable, dynamodbKey, attribute):
 def handler(event, context):
   body = json.loads(event['body'])
   dynamodbKey = {
-    'websocketURL': body['endpoint'],
-    'parentID': body['parentID']
+    'websocketUrl': body['endpoint'],
+    'socketId': body['socketId']
   }
 
   currentTime = time.time()

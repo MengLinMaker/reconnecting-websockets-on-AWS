@@ -74,14 +74,14 @@ resources:
       Properties:
         TableName: WebSocket-Test-Table
         KeySchema:
-          - AttributeName: websocketURL
+          - AttributeName: websocketUrl
             KeyType: HASH
-          - AttributeName: parentID
+          - AttributeName: socketId
             KeyType: RANGE
         AttributeDefinitions:
-          - AttributeName: websocketURL
+          - AttributeName: websocketUrl
             AttributeType: S
-          - AttributeName: parentID
+          - AttributeName: socketId
             AttributeType: S
         ProvisionedThroughput:
           ReadCapacityUnits: 1

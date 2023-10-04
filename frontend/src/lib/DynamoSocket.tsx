@@ -16,10 +16,10 @@ export  class DynamoSocket {
     this.#socketId = socketId
   }
 
-  #setSocketId(currentID) {
-    if (currentID && currentID != this.#socketId) {
-      this.#socketId = currentID
-      this.#onSocketIdHandler(currentID)
+  #setSocketId(currentId) {
+    if (currentId && currentId != this.#socketId) {
+      this.#socketId = currentId
+      this.#onSocketIdHandler(currentId)
     }
   }
   
@@ -30,7 +30,7 @@ export  class DynamoSocket {
   #sendSocketIdToServer(socketRoute) {
     this.#socket?.send(JSON.stringify({
       'action': socketRoute,
-      'parentID': this.#socketId
+      'socketId': this.#socketId
     }))
   }
 
@@ -54,7 +54,7 @@ export  class DynamoSocket {
     }
     this.#socket.onmessage = (messageEvent) => {
       const data = JSON.parse(messageEvent.data)
-      this.#setSocketId(data['parentID'])
+      this.#setSocketId(data['socketId'])
       this.#messageToClient(JSON.parse(data['message']))
     }
     window.addEventListener('online', this.#reconnectWebsocket)
