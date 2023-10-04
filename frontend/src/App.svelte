@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Socklet from './lib/socklet.svelte'
+  import Socklet from './lib/Socklet.svelte'
 </script>
 
 <h2>WebSocket Test</h2>
