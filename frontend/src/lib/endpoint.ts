@@ -1,5 +1,4 @@
 // @ts-ignore
-
 import endpoint from '/src/endpoint.json'
 
 const socketFilter = endpoint.dev.outputs.filter((output:any) => {
