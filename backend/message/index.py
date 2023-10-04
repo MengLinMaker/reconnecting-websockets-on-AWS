@@ -1,8 +1,6 @@
 import json
 import boto3
 
-dynamodbTable = boto3.resource('dynamodb').Table('WebSocket-Test-Table')
-
 # Websocket message client from dynamodb stream
 def handler(event, context):
   try:
