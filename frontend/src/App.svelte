@@ -5,4 +5,5 @@
 <h2>WebSocket Test</h2>
 <div class="flex">
   <Socklet/>
+  <Socklet/>
 </div>
