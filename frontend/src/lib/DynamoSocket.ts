@@ -1,14 +1,12 @@
-type StringInputVoid = (val:string) => void
-
 export  class DynamoSocket {
   #socket : WebSocket|null = null
   #socketUrl = ''
   #socketId = ''
-  #onMessageHandler: StringInputVoid
-  #onSocketIdHandler: StringInputVoid
+  #onMessageHandler
+  #onSocketIdHandler
 
   constructor(socketUrl:string, {
-    onMessage = (message:string) => {},
+    onMessage = (message:object) => {},
     onSocketId = (socketId:string) => {},
     socketId = ''
   }) {
@@ -26,16 +24,16 @@ export  class DynamoSocket {
     window.removeEventListener('online', this.#reconnectWebsocket.bind(this))
   }
 
-  #setSocketId(currentId) {
+  #setSocketId(currentId:string) {
     this.#socketId = currentId
     this.#onSocketIdHandler(currentId)
   }
   
-  #messageToClient(newMessage) {
+  #messageToClient(newMessage:object) {
     if (newMessage) this.#onMessageHandler(newMessage)
   }
   
-  #sendSocketIdToServer(socketRoute) {
+  #sendSocketIdToServer(socketRoute:string) {
     this.#socket?.send(JSON.stringify({
       'action': socketRoute,
       'socketId': this.#socketId
