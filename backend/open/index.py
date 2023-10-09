@@ -1,8 +1,17 @@
 import json
+import uuid
 import time
+import struct
+import base64
 import boto3
 
 dynamodbTable = boto3.resource('dynamodb').Table('WebSocket-Test-Table')
+
+def ulid():
+  uuidByte = uuid.uuid4().bytes
+  timeByte = struct.pack('!d', time.time())
+  ulidString = base64.urlsafe_b64encode(timeByte+uuidByte).decode('ascii').strip("=")
+  return ulidString
 
 def dynamodb_update(dynamodbTable, dynamodbKey, attribute):
   condition_expression = []
@@ -35,7 +44,7 @@ def handler(event, context):
 
   apigateway = boto3.client('apigatewaymanagementapi', endpoint_url=endpoint_url)
   if socketId == '':
-    socketId = currentId
+    socketId = ulid()
     TTL = int(time.time() + 60*5)
     apigateway.post_to_connection(ConnectionId=currentId, Data=json.dumps({'socketId': currentId}))
     dynamodbTable.put_item(Item={
