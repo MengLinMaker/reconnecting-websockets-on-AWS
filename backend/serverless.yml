@@ -69,7 +69,7 @@ functions:
       - http:
           path: ping
           method: post
-          cors: false
+          cors: true
 
 resources:
   Resources:
