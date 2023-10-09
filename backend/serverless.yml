@@ -6,6 +6,10 @@ provider:
   runtime: python3.9
   region: ap-southeast-2
   architecture: arm64
+  stackTags:
+    app: ${self:app}
+    service: ${self:service}
+  logRetentionInDays: 7
   iamRoleStatements:
   - Effect: Allow
     Action:
