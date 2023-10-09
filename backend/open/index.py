@@ -46,7 +46,7 @@ def handler(event, context):
   if socketId == '':
     socketId = ulid()
     TTL = int(time.time() + 60*5)
-    apigateway.post_to_connection(ConnectionId=currentId, Data=json.dumps({'socketId': currentId}))
+    apigateway.post_to_connection(ConnectionId=currentId, Data=json.dumps({'socketId': socketId}))
     dynamodbTable.put_item(Item={
       'socketUrl': endpoint_url,
       'socketId': socketId,
